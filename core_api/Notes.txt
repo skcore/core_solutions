@@ -1,0 +1,42 @@
+﻿================================================
+
+Map: Branches the middleware pipeline based on the request path.
+MapGet: Defines middleware to handle HTTP GET requests for a specific path.
+MapPost: Defines middleware to handle HTTP POST requests for a specific path.
+Use: Adds middleware to the pipeline that runs for every request (and can pass control to the next middleware).
+Run: Defines terminal middleware that handles the request and prevents further middleware from running.
+MapWhen: Conditionally branches the middleware pipeline based on a custom condition.
+UseWhen: Conditionally executes middleware based on a custom condition but returns to the main pipeline afterward.
+
+================================================
+
+UseFileServer: Adds a file server to the pipeline that serves static files from the wwwroot folder.
+UseDefaultFiles: Adds middleware to the pipeline that looks for default files such as index.html or default.html.
+UseStaticFiles: Adds middleware to the pipeline that serves static files from the specified directory.
+UseDirectoryBrowser: Adds middleware to the pipeline that generates directory listings for directories without a default file.
+
+
+================================================
+
+Key Points:
+app.Map creates a separate pipeline for the specified path (in your case, /testmap).
+The middleware in the main pipeline won't be executed for the mapped path unless explicitly placed before the app.Map call.
+To make sure middleware runs in both cases, place the app.Use middleware before the app.Map.
+
+================================================
+
+Run is used to terminate the middleware pipeline, ensuring that no other middleware runs after it.
+Map creates a branch for certain routes and allows further middleware to run within 
+that branch, but doesn't terminate the overall pipeline. You can still call middleware within the branch using next(), 
+unless a Run is used within the branch to terminate it.
+
+================================================
+
+.NET 8 
+
+ShortCircuit: This method allows specific endpoints to bypass the middleware pipeline, directly returning a response.
+MapShortCircuit: This method defines multiple routes that should immediately return a specific response, 
+such as a 404 Not Found, without further processing.
+
+================================================
+
